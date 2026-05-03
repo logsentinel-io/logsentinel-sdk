@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb934d59-ed0e-44d9-8cc1-8ee688ad311f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/logsentinel-sdk.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/logsentinel-sdk.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logsentinel_sdk/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/logsentinel_sdk/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/logsentinel_sdk/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/logsentinel_sdk/logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_sentinel_id.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_sentinel_id.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +19,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="1" />
+    <option name="cachedIndexableFilesCount" value="18" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -25,12 +31,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Xtazhoxton"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Xtazhoxton&quot;
   }
-}]]></component>
+}</component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
       <RecentBranches>
@@ -90,6 +96,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "ai.playground.ignore.import.keys.banner.in.settings": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
@@ -130,6 +137,7 @@
       <option name="presentableId" value="Default" />
       <updated>1772726131324</updated>
       <workItem from="1772726132354" duration="26408000" />
+      <workItem from="1773857646500" duration="29613000" />
     </task>
     <servers />
   </component>

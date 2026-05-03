@@ -1,12 +1,13 @@
-import json
 import os
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Self
 
 import boto3
 
+from logsentinel_sdk import KinesisClient
+
 if TYPE_CHECKING:
-    from mypy_boto3_kinesis.type_defs import PutRecordsRequestEntryTypeDef
+    pass
 
 
 class Logger:
@@ -18,14 +19,22 @@ class Logger:
             endpoint_url: str | None = None,
     ) -> None:
         ssm_client = boto3.client("ssm", endpoint_url=endpoint_url)
-        response = ssm_client.get_parameter(Name="/logsentinel/stream-name")
-        self._stream_name = response["Parameter"]["Value"]
+        stream_name = ssm_client.get_parameter(Name="/logsentinel/stream-name")
+        dlq_url = ssm_client.get_parameter(Name="/logsentinel/dlq-url")
+        kinesis_client = boto3.client("kinesis", endpoint_url=endpoint_url)
+        sqs_client = boto3.client("sqs", endpoint_url=endpoint_url)
+        self._stream_name = stream_name["Parameter"]["Value"]
         self._lambda_request_id = os.environ.get("AWS_LAMBDA_REQUEST_ID")
         self._service = service
         self._sentinel_id = sentinel_id
         self._parent_service = parent_service
         self._buffer: list[dict[str, Any]] = []
-        self._kinesis_client = boto3.client("kinesis", endpoint_url=endpoint_url)
+        self._kinesis_client = KinesisClient(
+            kinesis_client,
+            sqs_client,
+            self._stream_name,
+            dlq_url["Parameter"]["Value"],
+        )
 
 
     def __enter__(self) -> Self:
@@ -68,14 +77,6 @@ class Logger:
     def flush(self) -> None:
         if len(self._buffer) == 0:
             return None
-        formated_records: list[PutRecordsRequestEntryTypeDef] = [
-            {
-                "Data": json.dumps(record).encode("utf-8"),
-                "PartitionKey": self._sentinel_id
-            }
-            for record in self._buffer]
-        self._kinesis_client.put_records(
-            StreamName=self._stream_name,
-            Records=formated_records
-        )
+        self._kinesis_client.flush(self._buffer)
         self._buffer.clear()
+        return None

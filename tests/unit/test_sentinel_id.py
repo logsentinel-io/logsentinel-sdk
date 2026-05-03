@@ -1,7 +1,8 @@
 import uuid
 
 from logsentinel_sdk import generate_sentinel_id
-import pytest
+
+
 def test_generate_sentinel_id_name():
     id = generate_sentinel_id()
     assert id.startswith('sent-')
