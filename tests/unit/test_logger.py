@@ -2,11 +2,10 @@ import datetime
 
 from logsentinel_sdk import Logger, generate_sentinel_id
 
-sentinel_id = generate_sentinel_id()
 
 def test_instantiate_mock_logger(aws_setup):
     sentinel_id = generate_sentinel_id()
-    with Logger(service="test", sentinel_id=sentinel_id ) as logger:
+    with Logger(service="test", sentinel_id=sentinel_id ):
         assert True
 
 def test_logger_append_buffer(aws_setup):
