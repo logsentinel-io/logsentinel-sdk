@@ -11,6 +11,19 @@ if TYPE_CHECKING:
 
 
 class Logger:
+    """Structured logger that buffers events and flushes them to Kinesis on exit.
+
+    Use as a context manager so ``flush()`` is guaranteed to run even if the
+    Lambda handler raises an exception.
+
+    Example:
+        >>> sentinel_id = event.get("sentinel_id") or generate_sentinel_id()
+        >>> with Logger(service="battle-service", sentinel_id=sentinel_id) as logger:
+        ...     logger.info("Battle started", pokemon="Pikachu")
+        ...     # pass sentinel_id to downstream Lambdas:
+        ...     payload = {"sentinel_id": sentinel_id, ...}
+    """
+
     def __init__(
             self,
             service: str,
@@ -18,6 +31,19 @@ class Logger:
             parent_service: str | None = None,
             endpoint_url: str | None = None,
     ) -> None:
+        """Initialise the logger and read stream config from SSM Parameter Store.
+
+        Args:
+            service: Name of the current Lambda / microservice (e.g. ``"battle-service"``).
+                Stored on every log record for filtering.
+            sentinel_id: Correlation ID for the full execution trace. Generate
+                with :func:`generate_sentinel_id` at the entry point and propagate
+                through all downstream payloads.
+            parent_service: Optional name of the upstream service that invoked
+                this Lambda. Stored on every record when provided.
+            endpoint_url: Override the AWS endpoint URL (useful for LocalStack
+                in integration tests, e.g. ``"http://localhost:4566"``).
+        """
         ssm_client = boto3.client("ssm", endpoint_url=endpoint_url)
         stream_name = ssm_client.get_parameter(Name="/logsentinel/stream-name")
         dlq_url = ssm_client.get_parameter(Name="/logsentinel/dlq-url")
@@ -60,21 +86,58 @@ class Logger:
 
 
     def debug(self, message: str, **metadata: object) -> None:
+        """Buffer a DEBUG-level log record.
+
+        Args:
+            message: Human-readable description of the event.
+            **metadata: Arbitrary key/value pairs stored under the ``metadata``
+                field (e.g. ``pokemon="Pikachu"``, ``duration_ms=42``).
+        """
         self._log("DEBUG", message, **metadata)
 
     def info(self, message: str, **metadata: object) -> None:
+        """Buffer an INFO-level log record.
+
+        Args:
+            message: Human-readable description of the event.
+            **metadata: Arbitrary key/value pairs stored under the ``metadata`` field.
+        """
         self._log("INFO", message, **metadata)
 
     def warning(self, message: str, **metadata: object) -> None:
+        """Buffer a WARNING-level log record.
+
+        Args:
+            message: Human-readable description of the event.
+            **metadata: Arbitrary key/value pairs stored under the ``metadata`` field.
+        """
         self._log("WARNING", message, **metadata)
 
     def error(self, message: str, **metadata: object) -> None:
+        """Buffer an ERROR-level log record.
+
+        Args:
+            message: Human-readable description of the event.
+            **metadata: Arbitrary key/value pairs stored under the ``metadata`` field.
+        """
         self._log("ERROR", message, **metadata)
 
     def critical(self, message: str, **metadata: object) -> None:
+        """Buffer a CRITICAL-level log record.
+
+        Args:
+            message: Human-readable description of the event.
+            **metadata: Arbitrary key/value pairs stored under the ``metadata`` field.
+        """
         self._log("CRITICAL", message, **metadata)
 
     def flush(self) -> None:
+        """Send all buffered records to Kinesis and clear the buffer.
+
+        Called automatically by ``__exit__`` when the ``with`` block ends.
+        Safe to call manually if you need mid-execution checkpointing.
+        Does nothing if the buffer is empty.
+        """
         if len(self._buffer) == 0:
             return None
         self._kinesis_client.flush(self._buffer)
