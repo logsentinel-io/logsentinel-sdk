@@ -8,9 +8,30 @@ if TYPE_CHECKING:
     from mypy_boto3_kinesis.type_defs import PutRecordsRequestEntryTypeDef
 
 class KinesisClient:
+    """Low-level Kinesis writer with exponential-backoff retry and SQS DLQ fallback.
+
+    On persistent failure (all retries exhausted), records are:
+
+    1. Printed as JSON to stdout so they land in CloudWatch Logs.
+    2. Sent individually to the SQS Dead Letter Queue for later replay.
+
+    Retry delays (default): 100 ms → 200 ms → 400 ms → 800 ms → 1 600 ms.
+    Override via env vars ``LOGSENTINEL_RETRY_BASE_MS`` and ``LOGSENTINEL_MAX_RETRIES``.
+    """
+
     def __init__\
     (self, kinesis_client: Any, sqs_client: Any, stream_name: str, dlq_url: str)\
     -> None:
+        """Initialise the client with pre-built boto3 clients.
+
+        Args:
+            kinesis_client: A boto3 Kinesis client (``boto3.client("kinesis")``).
+            sqs_client: A boto3 SQS client (``boto3.client("sqs")``).
+            stream_name: Name of the target Kinesis Data Stream
+                (read from SSM by :class:`Logger`).
+            dlq_url: URL of the SQS Dead Letter Queue for failed records
+                (read from SSM by :class:`Logger`).
+        """
         self.kinesis_client = kinesis_client
         self.sqs_client = sqs_client
         self.stream_name = stream_name
@@ -36,6 +57,16 @@ class KinesisClient:
         return failed_indices
 
     def flush(self, records: list[dict[str, Any]]) -> None:
+        """Send records to Kinesis, retrying failed entries with exponential backoff.
+
+        All records share the same partition key (the ``sentinel_id`` of the
+        first record), so all events from one execution land on the same shard
+        in order.
+
+        Args:
+            records: List of log record dicts as built by :class:`Logger`.
+                Must be non-empty. Each dict must contain a ``"sentinel_id"`` key.
+        """
         sentinel_id = records[0]["sentinel_id"]
         formated_records: list[PutRecordsRequestEntryTypeDef] = [
             {

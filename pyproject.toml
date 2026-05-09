@@ -1,13 +1,26 @@
 [tool.poetry]
 name = "logsentinel-sdk"
 version = "0.1.0"
-description = ""
-authors = []
+description = "Python SDK for structured, correlated logging from AWS Lambda functions"
+authors = ["Arthur <arthur@logsentinel.dev>"]
+license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/Xtazhoxton/logsentinel-sdk"
+repository = "https://github.com/Xtazhoxton/logsentinel-sdk"
+keywords = ["logging", "aws", "lambda", "observability", "kinesis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: System :: Logging",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
 package-mode = true
 packages = [
     {include = "logsentinel_sdk", from = "src"}
 ]
+include = ["src/logsentinel_sdk/py.typed"]
 
 [tool.poetry.dependencies]
 python = ">=3.13,<4.0"
@@ -28,7 +41,7 @@ pytest-cov = "*"
 ruff = "^0.15.4"
 mypy = "^1.19.1"
 moto = {version = ">=5.1.21,<6.0.0", extras = ["dynamodb", "kinesis", "s3", "sqs", "ssm"]}
-boto3-stubs = {extras = ["kinesis", "ssm"], version = "^1.42.64"}
+boto3-stubs = {extras = ["cloudformation", "dynamodb", "kinesis", "s3", "sqs", "ssm", "sts"], version = "^1.43.6"}
 
 [tool.ruff]
 target-version = "py313"
