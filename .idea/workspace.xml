@@ -38,6 +38,10 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+                    <option name="branchName" value="feature/t011-publish-package" />
+                    <option name="lastUsedInstant" value="1778576964" />
+                  </RecentBranch>
+                  <RecentBranch>
                     <option name="branchName" value="feature/t008-fix-tests" />
                     <option name="lastUsedInstant" value="1778222751" />
                   </RecentBranch>
@@ -52,10 +56,6 @@
                   <RecentBranch>
                     <option name="branchName" value="feature/t002-addGenerateId" />
                     <option name="lastUsedInstant" value="1772886628" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="feature/t001" />
-                    <option name="lastUsedInstant" value="1772729197" />
                   </RecentBranch>
                 </list>
               </option>
@@ -96,7 +96,7 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "ai.playground.ignore.import.keys.banner.in.settings": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/t011-publish-package",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/arthur/Documents/logsentinel-project/logsentinel-sdk",
     "node.js.detected.package.eslint": "true",
@@ -135,7 +135,7 @@
       <workItem from="1772726132354" duration="26408000" />
       <workItem from="1773857646500" duration="29613000" />
       <workItem from="1777788242576" duration="15708000" />
-      <workItem from="1778134228263" duration="8809000" />
+      <workItem from="1778134228263" duration="10672000" />
     </task>
     <servers />
   </component>

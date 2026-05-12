@@ -5,8 +5,8 @@ description = "Python SDK for structured, correlated logging from AWS Lambda fun
 authors = ["Arthur <arthur@logsentinel.dev>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/Xtazhoxton/logsentinel-sdk"
-repository = "https://github.com/Xtazhoxton/logsentinel-sdk"
+homepage = "https://github.com/logsentinel-io/logsentinel-sdk"
+repository = "https://github.com/logsentinel-io/logsentinel-sdk"
 keywords = ["logging", "aws", "lambda", "observability", "kinesis"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -26,6 +26,11 @@ include = ["src/logsentinel_sdk/py.typed"]
 python = ">=3.13,<4.0"
 boto3 = "^1.42.61"
 
+[[tool.poetry.source]]
+name = "github"
+url = "https://pypi.pkg.github.com/logsentinel-io/"
+priority = "supplemental"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -36,8 +41,8 @@ pythonpath =["src"]
 addopts = "--cov=src/logsentinel_sdk --cov-report=term-missing"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "*"
-pytest-cov = "*"
+pytest = "^9.0"
+pytest-cov = "^7.0"
 ruff = "^0.15.4"
 mypy = "^1.19.1"
 moto = {version = ">=5.1.21,<6.0.0", extras = ["dynamodb", "kinesis", "s3", "sqs", "ssm"]}

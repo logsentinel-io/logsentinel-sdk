@@ -145,3 +145,27 @@ Override defaults via environment variables:
 |----------|---------|-------------|
 | `LOGSENTINEL_RETRY_BASE_MS` | `100` | Base delay in milliseconds |
 | `LOGSENTINEL_MAX_RETRIES` | `5` | Maximum number of retry attempts |
+
+---
+
+## Current limitations
+
+These constraints are by design in v0.1. They represent known gaps, not bugs.
+
+**AWS only**
+The SDK depends on boto3, Kinesis, SQS, and SSM Parameter Store. It cannot run on GCP, Azure, or on-premise infrastructure. There is no pluggable transport layer — Kinesis is the only supported backend.
+
+**Single AWS account**
+All Lambdas in a workflow must run in the same AWS account. Cross-account propagation (e.g. a Lambda in account A calling a Lambda in account B) is not supported — the target Lambda would attempt to write to a Kinesis stream it has no access to.
+
+**Single AWS region**
+The SDK reads its configuration (stream name, DLQ URL) from SSM at init time for the region the Lambda runs in. A workflow that spans multiple regions would require separate LogSentinel deployments per region, and events would not be merged into a single timeline.
+
+**Manual propagation only**
+The `sentinel_id` must be passed explicitly in every downstream payload. The SDK does not inject it automatically into HTTP headers, Step Functions contexts, or event metadata. If a service in the chain does not forward it, the trace is broken from that point.
+
+**No sampling or rate limiting**
+Every log call is buffered and every buffer is flushed to Kinesis on exit, regardless of volume. There is no built-in sampling, throttling, or minimum log level at the transport layer.
+
+**Config from SSM only**
+Stream name and DLQ URL are always read from SSM Parameter Store at init. There is no way to pass them directly as constructor arguments or via environment variables.
